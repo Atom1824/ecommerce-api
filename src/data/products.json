@@ -1,9 +1,4 @@
 [
-  {
-    "id": 2,
-    "status": true,
-    "title": "casco",
-    "price": 250,
-    "stock": 10
-  }
+  { "id": "1", "title": "Camiseta", "price": 200 },
+  { "id": "2", "title": "Pantalón", "price": 350 }
 ]
