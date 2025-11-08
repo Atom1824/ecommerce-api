@@ -1,45 +1,45 @@
-<h1>🛒 Productos en tiempo real</h1>
+<h2>Productos en tiempo real</h2>
 
-<ul id="productList"></ul>
-
-<h3>Agregar nuevo producto</h3>
 <form id="productForm">
-  <input name="title" placeholder="Nombre del producto" required>
-  <input name="price" placeholder="Precio" type="number" required>
-  <button type="submit">Agregar producto</button>
+    <h3>Agregar nuevo producto</h3>
+
+    <div>
+        <label for="title">Nombre:</label>
+        <input type="text" id="title" required>
+
+        <label for="price">Precio:</label>
+        <input type="number" id="price" required>
+    </div>
+    
+    <div>
+        <label for="code">Código:</label>
+        <input type="text" id="code" required>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" required>
+    </div>
+
+    <div>
+        <label for="category">Categoría:</label>
+        <input type="text" id="category" required>
+        
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" required>
+    </div>
+
+    <div>
+        <label for="thumbnail">Imagen:</label>
+        <input type="file" id="thumbnail" name="image" accept="image/*">
+    </div>
+
+    <button type="submit">Agregar producto</button>
 </form>
 
+<hr>
+
+<h3>Lista de Productos</h3>
+<div id="products-list">
+    </div>
+
 <script src="/socket.io/socket.io.js"></script>
-<script>
-const socket = io();
-
-function renderProducts(products) {
-  const list = document.getElementById("productList");
-  list.innerHTML = "";
-  products.forEach(p => {
-    const li = document.createElement("li");
-    li.dataset.id = p.id;
-    li.innerHTML = `<strong>${p.title}</strong> - $${p.price} <button class="delete-btn">Eliminar</button>`;
-    list.appendChild(li);
-  });
-}
-
-socket.on("products", renderProducts);
-
-document.getElementById("productForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const title = e.target.title.value;
-  const price = e.target.price.value;
-  if (!title || !price) return;
-  socket.emit("createProduct", { title, price });
-  e.target.reset();
-});
-
-document.getElementById("productList").addEventListener("click", (e) => {
-  if (e.target.classList.contains("delete-btn")) {
-    const id = e.target.closest("li").dataset.id;
-    if (!id) return;
-    socket.emit("deleteProduct", id);
-  }
-});
-</script>
+<script src="/js/realtime.js"></script>

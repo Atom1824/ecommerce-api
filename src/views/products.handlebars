@@ -1,22 +1,8 @@
-<h1>Lista de productos</h1>
+<h1>Tienda</h1>
 
-<table border="1" cellpadding="10">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Título</th>
-      <th>Precio</th>
-      <th>Descripción</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each products}}
-      <tr>
-        <td>{{this.id}}</td>
-        <td>{{this.title}}</td>
-        <td>${{this.price}}</td>
-        <td>{{this.description}}</td>
-      </tr>
-    {{/each}}
-  </tbody>
-</table>
+<div>
+  <a href="/cart">Ver carrito</a>
+</div>
+
+
+<script src="/js/main.js"></script>

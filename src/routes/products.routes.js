@@ -1,41 +1,93 @@
 import { Router } from "express";
-import { ProductManager } from "../managers/ProductManager.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import ProductManager from "../managers/ProductManager.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const productsPath = path.join(__dirname, "../data/products.json");
-const productManager = new ProductManager(productsPath);
+const productManager = new ProductManager();
 
 const router = Router();
 
 router.get("/", async (req, res) => {
-  const products = await productManager.getProducts();
-  res.json(products);
+    try {
+        const { limit = 10, page = 1, sort, category, status } = req.query;
+
+        const query = {};
+        if (category) {
+            query.category = category;
+        }
+        if (status) { 
+            query.status = status === 'true'; 
+        }
+
+        const options = {
+            limit: parseInt(limit),
+            page: parseInt(page),
+            lean: true, 
+        };
+
+        if (sort) {
+            options.sort = { price: sort === 'asc' ? 1 : -1 }; 
+        }
+
+        const productsResult = await productManager.getProducts(query, options);
+
+        res.json({
+            status: 'success',
+            payload: productsResult.docs,
+            totalPages: productsResult.totalPages,
+            prevPage: productsResult.prevPage,
+            nextPage: productsResult.nextPage,
+            page: productsResult.page,
+            hasPrevPage: productsResult.hasPrevPage,
+            hasNextPage: productsResult.hasNextPage,
+           
+        });
+
+    } catch (error) {
+        console.error("Error en GET /api/products:", error.message);
+        res.status(500).json({ status: 'error', error: 'Error interno del servidor.' });
+    }
 });
+
 
 router.post("/", async (req, res) => {
-  const newProduct = await productManager.addProduct(req.body);
-  res.status(201).json(newProduct);
+    try {
+        const newProduct = await productManager.addProduct(req.body);
+        res.status(201).json({ status: 'success', payload: newProduct });
+    } catch (error) {
+        res.status(400).json({ status: 'error', error: error.message });
+    }
 });
+
 
 router.get("/:pid", async (req, res) => {
-  const product = await productManager.getProductById(Number(req.params.pid));
-  if (!product) return res.status(404).json({ error: "Producto no encontrado" });
-  res.json(product);
+    try {
+        const product = await productManager.getProductById(req.params.pid);
+        if (!product) return res.status(404).json({ status: 'error', error: "Producto no encontrado o ID inválido." });
+        res.json({ status: 'success', payload: product });
+    } catch (error) {
+        res.status(400).json({ status: 'error', error: "ID de producto inválido." });
+    }
 });
+
 
 router.put("/:pid", async (req, res) => {
-  const updatedProduct = await productManager.updateProduct(Number(req.params.pid), req.body);
-  if (!updatedProduct) return res.status(404).json({ error: "Producto no encontrado" });
-  res.json(updatedProduct);
+    try {
+        const updatedProduct = await productManager.updateProduct(req.params.pid, req.body);
+        if (!updatedProduct) return res.status(404).json({ status: 'error', error: "Producto no encontrado o ID inválido." });
+        res.json({ status: 'success', payload: updatedProduct });
+    } catch (error) {
+        res.status(400).json({ status: 'error', error: error.message });
+    }
 });
 
+
 router.delete("/:pid", async (req, res) => {
-  await productManager.deleteProduct(Number(req.params.pid));
-  res.json({ message: "Producto eliminado" });
+    try {
+        const success = await productManager.deleteProduct(req.params.pid);
+        if (!success) return res.status(404).json({ status: 'error', error: "Producto no encontrado o ID inválido." });
+        res.json({ status: 'success', message: "Producto eliminado con éxito." });
+    } catch (error) {
+        res.status(500).json({ status: 'error', error: error.message });
+    }
 });
 
 export default router;
