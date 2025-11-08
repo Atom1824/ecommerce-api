@@ -78,7 +78,6 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Vaciar carrito
         if (e.target.id === 'clear-cart-btn') {
             if (!confirm('¿Estás seguro de que quieres vaciar el carrito?')) return;
             try {

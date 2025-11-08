@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Productos en tiempo real</title>
+  <title>{{title}}</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 2rem; }
     ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 1rem; }
@@ -14,40 +14,9 @@
   </style>
 </head>
 <body>
-   {{{body}}}
-  
-  <ul>
-    {{#each products}}
-      <li>
-        {{#if this.thumbnail}}
-          <div>
-            <img src="/images/{{this.thumbnail}}" alt="{{this.title}}" style="max-width:100%;height:150px;object-fit:cover;" />
-          </div>
-        {{/if}}
-
-        <strong>{{this.title}}</strong><br />
-        <em>{{this.description}}</em><br />
-        <span>Precio: ${{this.price}}</span><br />
-        <span>Stock disponible: {{this.stock}}</span><br />
-
-        <input 
-          type="number" 
-          id="qty-{{this._id}}" 
-          min="1" 
-          max="{{this.stock}}" 
-          value="1" 
-        />
-        <button 
-          class="add-to-cart-btn" 
-          data-pid="{{this._id}}" 
-          data-stock="{{this.stock}}"
-        >
-          Agregar al carrito
-        </button>
-      </li>
-    {{/each}}
-  </ul>
+  {{{body}}}
 </body>
 </html>
+
 
 
